@@ -253,6 +253,8 @@ Now that the data has been successfully stored in a JSON file, I’ll make it mo
 To make this happen, we’ll first extract the data for various stress features and then plot it on a graph. This way we can visualize the stress related information more effectively.
 
 ## ToDo
-`*` Implement hand detection
-`*` Improve the detection accuracy
-`*` Implement a different stress detection using TensorFlow
+`* Implement hand detection`
+
+`* Improve the detection accuracy` 
+
+`* Implement a different stress detection using TensorFlow` 
