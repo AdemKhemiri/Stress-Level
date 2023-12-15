@@ -7,17 +7,13 @@ import json
 
 # Initialize MediaPipe Face and Hand models
 mp_face_mesh = mp.solutions.face_mesh.FaceMesh()
-mp_hand_mesh = mp.solutions.hands.Hands()
+# mp_hand_mesh = mp.solutions.hands.Hands()
 
 # Function to calculate eye aspect ratio (EAR)
 def eye_aspect_ratio(eye_landmarks):
     # Define the indexes of the eye landmarks
     left_eye_indexes = [33, 159, 145, 155]
     right_eye_indexes = [463, 386, 374, 263]
-    print(eye_landmarks[463])
-    print(eye_landmarks[386])
-    print(eye_landmarks[374])
-    print(eye_landmarks[263])
     # Extract the coordinates of the left and right eyes from the landmarks
     left_eye_coords = [(eye_landmarks[idx].x, eye_landmarks[idx].y) for idx in left_eye_indexes]
     right_eye_coords = [(eye_landmarks[idx].x, eye_landmarks[idx].y) for idx in right_eye_indexes]
@@ -53,7 +49,6 @@ def calculate_blink_stress(face_landmarks):
     if  0 <= Eye_AR <= 1:
         return 1 - Eye_AR
     return 0
-    # return Eye_AR
 
 # Function to calculate average vertical displacement of eyebrow landmarks
 def calculate_eyebrow_displacement(eyebrow_landmarks):
@@ -83,17 +78,14 @@ def calculate_eyebrow_stress(face_landmarks):
     # Calculate the overall average eyebrow displacement
     avg_displacement = (avg_displacement_left + avg_displacement_right) / 2.0
 
-    # print("---------------------------")
-    # print(avg_displacement)
 
-    return 1 - avg_displacement if avg_displacement > 0 else 0 # Low stress in the eyebrows
+    return 1 - avg_displacement if avg_displacement > 0 else 0
 
 # Function to calculate lip movement stress
 def calculate_lip_stress(face_landmarks):
     if not face_landmarks: return 0
     # Extract lip landmarks from face landmarks
     lip_landmarks = face_landmarks[0].landmark
-    # print(lip_landmarks)
     # Define the indexes of the lip landmarks
     upper_lip_indexes = [0, 11, 12, 13, 270, 40, 185]
     lower_lip_indexes = [14, 16, 17, 320, 180, 375]
@@ -101,14 +93,15 @@ def calculate_lip_stress(face_landmarks):
     # Extract the coordinates of the upper and lower lips from the landmarks
     upper_lip_coords = [(lip_landmarks[idx].x, lip_landmarks[idx].y) for idx in upper_lip_indexes]
     lower_lip_coords = [(lip_landmarks[idx].x, lip_landmarks[idx].y) for idx in lower_lip_indexes]
-    # print("upper", upper_lip_coords[8][1])
-    # print("lower", lower_lip_coords[0][1])
+
     # Calculate the vertical distance between the upper and lower lips
     lip_ver_dist = abs(upper_lip_coords[6][0] - lower_lip_coords[5][0])
     # print(lip_ver_dist)
     return lip_ver_dist
+
+
 # Function to calculate stress level from facial features
-def calculate_stress(face_landmarks, hand_landmarks):
+def calculate_stress(face_landmarks):
     # Simplified stress calculation based on blink, eyebrow, and lip movement
     blink_stress = calculate_blink_stress(face_landmarks)  # blink detection logic
     eyebrow_stress = calculate_eyebrow_stress(face_landmarks)  # eyebrow movement detection logic
@@ -132,14 +125,14 @@ def process_video(input_video_path):
 
         # Run face and hand detection on each frame
         results_face = mp_face_mesh.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-        results_hand = mp_hand_mesh.process(frame)
+        # results_hand = mp_hand_mesh.process(frame)
 
         # Extract landmarks for face and hand
         face_landmarks = results_face.multi_face_landmarks
-        hand_landmarks = results_hand.multi_hand_landmarks
+        # hand_landmarks = results_hand.multi_hand_landmarks
 
         # Calculate stress level for the current frame
-        blink_stress, eyebrow_stress, lip_stress, final_stress = calculate_stress(face_landmarks, hand_landmarks)
+        blink_stress, eyebrow_stress, lip_stress, final_stress = calculate_stress(face_landmarks)
 
         # Append timestamp and stress value to the data
         stress_data['frames'].append({
@@ -154,8 +147,9 @@ def process_video(input_video_path):
     return stress_data
 
 if __name__ == "__main__":
+    
     input_video_path = "video.mp4"
-    # input_video_path = "happy.mp4"
+    
     output_data = process_video(input_video_path)
 
     # Save stress data as JSON
