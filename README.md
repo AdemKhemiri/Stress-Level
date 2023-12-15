@@ -1,6 +1,6 @@
 # Documentation 
 
-1. **Introduction** 
+I. **Introduction** 
 
 This script utilizes the MediaPipe library for face landmark detection to analyze stress-related features in a video. It calculates stress levels based on factors such as blink patterns, eyebrow movements, and lip movements. 
 
@@ -8,19 +8,25 @@ This script utilizes the MediaPipe library for face landmark detection to analyz
 
 To install the required Python libraries for this script, you can use the following command in your terminal or command prompt: 
 
-`pip install -r requirements.txt`
+```python
+    pip install -r requirements.txt
+```
 
 3. **Usage** 
 
 To use the script, you can replace the "video.mp4" with the path to your desired input video.  
 
-`input_video_path = "video.mp4"`
+```python
+input_video_path = "video.mp4"
+```
 
 The stress data will be saved in the “output/stress\_data.json" file. Adjustments to the stress calculation logic or output format can be made as needed. 
 
-`python main.py`
+```python
+python main.py
+```
 
-4. **Code Overview** 
+##  **Code Overview** 
 1. **Reference** 
 
 All the landmarks indexes are brought for the image provided by MediaPipe. 
@@ -240,3 +246,13 @@ Then dumping the resulting data in a JSON file.
     "final_stress": 0.32251572713601173
  }
 ```
+Now that the data has been successfully stored in a JSON file, I’ll make it more visually appealing using Matplotlib.
+
+![](output/graph.png)
+
+To make this happen, we’ll first extract the data for various stress features and then plot it on a graph. This way we can visualize the stress related information more effectively.
+
+## ToDo
+`*` Implement hand detection
+`*` Improve the detection accuracy
+`*` Implement a different stress detection using TensorFlow
